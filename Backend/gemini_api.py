@@ -1,9 +1,11 @@
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv  # <--- Add this
 
-# Configure the API key once at the top
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+load_dotenv()  # <--- This "wakes up" your .env file
 
+# Update this line to use the exact name from your .env file
+genai.configure(api_key="AIzaSyDAfsCgbLgoH1fS2L6eDtk9D0WwlTmnVmw")
 def get_ai_response(user_input, persona):
     # 1. Define your personalities
     personas = {
@@ -15,7 +17,7 @@ def get_ai_response(user_input, persona):
     try:
         # Initialize the model with the specific persona instruction
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
+            model_name="models/gemini-1.5-flash",
             system_instruction=personas.get(persona, "You are a helpful assistant.")
         )
         
