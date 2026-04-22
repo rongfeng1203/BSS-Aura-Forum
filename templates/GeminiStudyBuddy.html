@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/dark.css') }}">
+
+<div class="dark-web-container">
+    <div class="terminal-header">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <p class="terminal-title">TERMINAL // AI_CORE_v1.5</p>
+    </div>
+    
+    <div id="chat-window" class="chat-display">
+        <div class="ai-msg">READY FOR INPUT...</div>
+    </div>
+
+    <div class="input-area">
+        <span class="prompt">></span>
+        <input type="text" id="user-input" placeholder="Enter command..." autocomplete="off">
+        <button id="send-btn">EXECUTE</button>
+    </div>
+</div>
