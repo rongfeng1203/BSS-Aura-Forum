@@ -2,7 +2,7 @@ import google.generativeai as genai
 import os
 
 # Configure the API key once at the top
-genai.configure(api_key=os.environ.get("AIzaSyDAfsCgbLgoH1fS2L6eDtk9D0WwlTmnVmw"))
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def get_ai_response(user_input, persona):
     # 1. Define your personalities
