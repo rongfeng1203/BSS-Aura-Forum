@@ -11,6 +11,7 @@ def study_buddy():
     response = get_ai_response(user_message, "study_buddy")
     return jsonify({"reply": response})
 
+
 # Route for the BSS Starter Guide
 @app.route('/bss-guide', methods=['POST'])
 def bss_guide():
