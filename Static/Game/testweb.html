@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Quiz</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <style>
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            background: #0f172a; 
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* P5 Canvas stays in the background */
+        #defaultCanvas0 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #ui-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .quiz-box {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: white;
+        }
+
+        h2 { color: #38bdf8; margin-bottom: 10px; }
+        
+        #options-list { 
+            font-size: 0.95em; 
+            color: #94a3b8; 
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        input {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #38bdf8;
+            padding: 12px;
+            border-radius: 8px;
+            width: 80%;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        button {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: #7dd3fc;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+        }
+
+        #feedback { margin-top: 20px; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+    <div id="ui-wrapper">
+        <div class="quiz-box">
+            <h2 id="question-text">Which teacher gives the MOST infractions?</h2>
+            
+            <p id="options-list">
+                A. Mrs.Poce | B. Mr. Moffat | C. Mrs. Barnett | D. Mr. Vervick
+            </p>
+
+            <input type="text" id="user-input" placeholder="Enter Identity Token...">
+            <br>
+            <button id="submit-btn" py-click="check_answer">Verify Access</button>
+            <p id="feedback"></p>
+        </div>
+    </div>
+
+    <script>
+        let dots = [];
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            for(let i=0; i<80; i++) dots.push({x: random(width), y: random(height), s: random(1,3)});
+        }
+        function draw() {
+            background(15, 23, 42);
+            fill(56, 189, 248, 100);
+            noStroke();
+            dots.forEach(d => {
+                circle(d.x, d.y, d.s);
+                d.y -= d.s * 0.5;
+                if(d.y < 0) d.y = height;
+            });
+        }
+    </script>
+
+    <script type="py" src="./Identity.py" config="./pyscript.json"></script>
+
+</body>
+</html>
