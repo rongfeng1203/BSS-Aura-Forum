@@ -6,12 +6,12 @@
     <title>Forum Dashboard</title>
     <style>
         :root {
-            --bg-main: #F8F9FD;
-            --sidebar-bg: #FFFFFF;
-            --accent: #4e1720;
-            --text-main: #371f22;
-            --text-muted: #806b6c;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --bg-main: #181717;
+            --sidebar-bg: #181717;
+            --accent: #ffffff;
+            --text-main: #454545;
+            --text-muted: #ffffff;
+            --card-shadow: 0 4px 6px -1px rgba(170, 170, 170, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         * { box-sizing: border-box; }
@@ -27,7 +27,7 @@
         nav {
             width: 260px;
             background: var(--sidebar-bg);
-            border-right: 1px solid #E5E7EB;
+            border-right: 1px solid #292929;
             padding: 24px;
             display: flex;
             flex-direction: column;
@@ -42,16 +42,16 @@
             margin-bottom: 5px;
             transition: 0.2s;
         }
-        .nav-item.active { background: #EEF2FF; color: var(--accent); font-weight: 600; }
+        .nav-item.active { background: #5b0c10; color: var(--accent);}
 
         /* MAIN CONTENT */
         main { flex: 1; overflow-y: auto; padding: 40px; }
 
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-row { color: white; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
         /* THE INPUT CARD */
         .input-card {
-            background: white;
+            background: rgb(19, 19, 19);
             padding: 24px;
             border-radius: 16px;
             box-shadow: var(--card-shadow);
@@ -60,7 +60,9 @@
 
         input, textarea {
             width: 100%;
-            border: 1px solid #E5E7EB;
+            background: black;
+            border: 1px solid #464646;
+            color: white;
             border-radius: 10px;
             padding: 12px;
             margin-bottom: 12px;
@@ -70,8 +72,8 @@
         input:focus, textarea:focus { border-color: var(--accent); ring: 2px var(--accent); }
 
         .btn-primary {
-            background: var(--accent);
-            color: white;
+            background: #5b0c10;
+            color: rgb(255, 255, 255);
             border: none;
             padding: 12px 24px;
             border-radius: 10px;
@@ -83,7 +85,7 @@
 
         /* FEED CARDS */
         .post-card {
-            background: white;
+            background: rgb(44, 44, 44);
             padding: 20px;
             border-radius: 16px;
             box-shadow: var(--card-shadow);
@@ -94,32 +96,30 @@
         .post-card:hover { border-color: var(--accent); }
         
         .post-header { display: flex; align-items: center; margin-bottom: 12px; }
-        .avatar-circle {
-            width: 40px;
-            height: 40px;
-            background: #E0E7FF;
-            border-radius: 50%;
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            font-weight: bold;
-        }
-        .post-author { font-weight: 600; color: var(--text-main); }
+
         .post-time { font-size: 0.8rem; color: var(--text-muted); margin-left: auto; }
-        .post-body { color: #4B5563; line-height: 1.5; }
+        .post-body { color: #000000; line-height: 1.5; }
 
     </style>
 </head>
 <body>
 
     <nav>
-        <h2>AuraForum</h2>
-        <div class="nav-item active">General Discussion</div>
-        <div class="nav-item">Game</div>
-        <div class="nav-item">Study AI</div>
+        <h2>BSSAuraForum</h2>
+        <a class="nav-item active">General Discussion</a>
+        <a class="nav-item">Study AI</a>
     </nav>
+
+    <script>
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove 'active' class from all nav items
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            // Add 'active' class to the clicked item
+            this.classList.add('active');
+        });
+    });
+    </script>
 
     <main>
         <div class="header-row">
@@ -127,14 +127,78 @@
         </div>
 
         <div class="input-card">
-            <input type="text" id="nickname" placeholder="Choose a handle (e.g. AnonUser)">
-            <textarea id="message" placeholder="Share your thoughts..."></textarea>
-            <button class="btn-primary" id="submitBtn">Post to GitHub</button>
+            <textarea id="messageInput" placeholder="Share your thoughts..."></textarea>
+            <button class="btn-primary" id="submitBtn">Post</button>
+            <div id="statusMessage" style="color: white; font-size: 0.8rem; margin-top: 10px;"></div>
         </div>
 
         <div id="feed-container">
             </div>
     </main>
 
+    <script>
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Configuration
+        const PROXY_URL = 'insert proxy url here';
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const messageInput = document.getElementById('messageInput');
+        const statusMessage = document.getElementById('statusMessage');
+        const feedContainer = document.getElementById('feed-container');
+
+        // Post Submission
+        submitBtn.addEventListener('click', async () => {
+            const body = messageInput.value.trim();
+            
+            if (!body) {
+                statusMessage.innerText = "Please enter a message.";
+                return;
+            }
+
+            submitBtn.disabled = true;
+            statusMessage.innerText = "Syncing with GitHub...";
+
+            try {
+                const response = await fetch(PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ body: body })
+                });
+
+                if (response.ok) {
+                    statusMessage.innerText = "Success! Post queued.";
+                    messageInput.value = '';
+                } else {
+                    statusMessage.innerText = "Error: Post failed.";
+                }
+            } catch (err) {
+                statusMessage.innerText = "Connection error.";
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // 4. Feed Rendering Logic
+        // This helper creates the HTML for each card to match the .post-card CSS
+        function createPostCard(text, time) {
+            const card = document.createElement('div');
+            card.className = 'post-card';
+            card.innerHTML = `
+                <div class="post-header">
+                    <strong style="color: white;">Anonymous User</strong>
+                    <span class="post-time">${time}</span>
+                </div>
+                <div class="post-body" style="color: #ccc;">${text}</div>
+            `;
+            return card;
+        }
+    </script>
+    
 </body>
 </html>
