@@ -15,7 +15,7 @@
             margin: 0; 
             padding: 0; 
             overflow: hidden; 
-            background: #0f172a; 
+            background: #2b2f3b; 
             font-family: 'Segoe UI', sans-serif;
         }
 
@@ -36,9 +36,9 @@
         }
 
         .quiz-box {
-            background: rgba(30, 41, 59, 0.7);
+            background: #4e1720cc;
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            border: 1px solid rgba(137, 47, 71, 0.3);
             border-radius: 20px;
             padding: 40px;
             width: 90%;
@@ -48,19 +48,19 @@
             color: white;
         }
 
-        h2 { color: #38bdf8; margin-bottom: 10px; }
+        h2 { color: #ffffff; margin-bottom: 10px; }
         
         #options-list { 
             font-size: 0.95em; 
-            color: #94a3b8; 
+            color: #a3b1cb; 
             margin-bottom: 20px;
             line-height: 1.6;
         }
 
         input {
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: #38bdf8;
+            background: #3d131af4;
+            border: 1px solid #89434e;
+            color: #f9f9f9;
             padding: 12px;
             border-radius: 8px;
             width: 80%;
@@ -70,7 +70,7 @@
         }
 
         button {
-            background: #38bdf8;
+            background: #932739;
             color: #0f172a;
             border: none;
             padding: 12px 30px;
@@ -82,8 +82,8 @@
         }
 
         button:hover {
-            background: #7dd3fc;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+            background: #fbd9df;
+            box-shadow: 0 0 15px rgba(137, 47, 71, 0.6);
         }
 
         #feedback { margin-top: 20px; font-weight: 500; }
@@ -109,7 +109,7 @@
                 // This event listener listens for the "win_game" event, which is triggered when the user wins the game.
                 // Upon triggering, it opens the main index page in the same tab.
                 document.addEventListener("win_game", function() {
-                    window.open(".../index.html", "_self");
+                    window.open("../Templates/index.html", "_self");
                 });
             </script>
     </div>
