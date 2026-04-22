@@ -103,7 +103,15 @@
             <br>
             <button id="submit-btn" py-click="check_answer">Verify Access</button>
             <p id="feedback"></p>
+            
         </div>
+            <script>
+                // This event listener listens for the "win_game" event, which is triggered when the user wins the game.
+                // Upon triggering, it opens the main index page in the same tab.
+                document.addEventListener("win_game", function() {
+                    window.open(".../index.html", "_self");
+                });
+            </script>
     </div>
 
     <script>
@@ -125,6 +133,7 @@
     </script>
 
     <script type="py" src="./Identity.py" config="./pyscript.json"></script>
+
 
 </body>
 </html>

@@ -47,7 +47,6 @@ def check_answer(event):
     
     current_q = Quiz_content[current_index]
     
-    # Simple logic check
     is_correct = False
     if "type" in current_q and current_q["type"] == "input":
         if user_input.isdigit() and int(user_input) in current_q["acceptable_lengths"]:
@@ -58,17 +57,32 @@ def check_answer(event):
     if is_correct:
         feedback_el.innerText = current_q["feedback"]
         feedback_el.style.color = "#4ade80"
+        
         current_index += 1
+        
+        # Check if there are more questions left
         if current_index < len(Quiz_content):
-            user_input_el.value = ""
-            update_ui()
+            user_input_el.value = "" # Clear box for next question
+            update_ui() # This loads the next question text
         else:
+            # THIS part only runs when the whole quiz is finished
             document.querySelector("#question-text").innerText = "Identity Verified."
-            document.querySelector("#options-list").innerText = "Welcome back."
+            document.querySelector("#options-list").innerText = "Access Granted."
             user_input_el.style.display = "none"
+            
+            # Trigger the win event for your JavaScript
+            win_event = js.CustomEvent.new("win_game")
+            document.dispatchEvent(win_event)
     else:
         feedback_el.innerText = "Access Denied. Try again."
         feedback_el.style.color = "#f87171"
 
-# --- CRITICAL: INITIALIZE THE GAME ---
 update_ui()
+
+# If all questions are answered, show verification message and dispatch event
+if current_index >= len(Quiz_content):
+    document.querySelector("#question-text").innerText = "Identity Verified."
+    event = js.CustomEvent.new("win_game")
+    document.dispatchEvent(event)
+
+
