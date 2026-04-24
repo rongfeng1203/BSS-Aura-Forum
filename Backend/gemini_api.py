@@ -5,7 +5,7 @@ from dotenv import load_dotenv  # <--- Add this
 load_dotenv()  # <--- This "wakes up" your .env file
 
 # Update this line to use the exact name from your .env file
-genai.configure(api_key="AIzaSyDAfsCgbLgoH1fS2L6eDtk9D0WwlTmnVmw")
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 def get_ai_response(user_input, persona):
     # 1. Define your personalities
     personas = {
