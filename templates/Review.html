@@ -32,7 +32,6 @@
             display: flex;
             flex-direction: column;
         }
-        
         nav a {
             text-decoration: none; 
             color: inherit;       
@@ -41,13 +40,18 @@
 
         nav h2 { font-size: 1.2rem; color: var(--accent); margin-bottom: 30px; }
         .nav-item { 
+            text-decoration: none;
+            color: #d1d5db;
             padding: 12px; 
             border-radius: 8px; 
-            color: var(--text-muted); 
+            color: #ffffff; 
             cursor: pointer; 
             margin-bottom: 5px;
             transition: 0.2s;
+            
         }
+
+       
         .nav-item.active { background: #5b0c10; color: var(--accent);}
 
         /* MAIN CONTENT */
@@ -76,7 +80,6 @@
             outline: none;
         }
         input:focus, textarea:focus { border-color: var(--accent); }
-
         .btn-primary {
             background: #5b0c10;
             color: rgb(255, 255, 255);
@@ -110,49 +113,22 @@
 </head>
 <body>
     <nav>
-        <h2>Rate My Teach</h2>
-        <div class="nav-item active"><a href="#"></a>Dashboard</a></div>
-        <div class="nav-item"><a href="#">My Reviews</a></div>
-        <div class="nav-item"><a href="Review.html">Write a Review</a></div>
-        <div class="nav-item"><a href="#">Settings</a></div>
+        <h2>RateMyTeach</h2>
+            <div class="nav-item"><a href="RateMyTeach.html">Dashboard</a></div>
+            <div class="nav-item"><a href="#">My Reviews</a></div>
+            <div class="nav-item active"><a href="#">Write a Review</a></div>
+            <div class="nav-item"><a href="#">Settings</a></div>
     </nav>
     <main>
         <div class="header-row">
-            <h1>Welcome to Rate My Teach!</h1>
-            <button class="btn-primary">Write a Review</button>
+            <h1>Write a Review</h1>
         </div>
-        <div class="post-card">
-            <div class="post-header">
-                <strong>John Doe</strong>
-                <span class="post-time">2 hours ago</span>
-            </div>
-            <div class="post-body">
-                Professor Smith is an amazing teacher! He explains concepts clearly and is always available for help. </div>
-        </div>
-        <div class="post-card">
-            <div class="post-header">
-                <strong>Jane Doe</strong>
-                <span class="post-time">5 hours ago</span>
-            </div>
-            <div class="post-body"> Professor Smith is an amazing teacher! He explains concepts clearly and is always available for help. </div>
-        </div>
-        <div class="post-card">
-            <div class="post-header">
-                <strong>Emily Davis</strong>
-                <span class="post-time">1 day ago</span>
-            </div>
-            <div class="post-body"> Professor Smith is an amazing teacher! He explains concepts clearly and is always available for help. </div>
+        <div class="input-card">
+            <input type="text" placeholder="Course Name">
+            <input type="text" placeholder="Teacher Name">
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button class="btn-primary">Submit Review</button>
         </div>
     </main>
-    <script>
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
-            // Remove 'active' class from all nav items
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            // Add 'active' class to the clicked item
-            this.classList.add('active');
-        });
-    });
-    </script>
 </body>
-</html>   
+</html>
