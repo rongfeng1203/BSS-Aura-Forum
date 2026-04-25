@@ -1,37 +1,42 @@
-import google.generativeai as genai
+import requests
 import os
-from dotenv import load_dotenv  # <--- Add this
+from dotenv import load_dotenv
 
-load_dotenv()  # <--- This "wakes up" your .env file
+load_dotenv()
 
-# Update this line to use the exact name from your .env file
-genai.configure(api_key="YOUR_API_KEY")
 def get_ai_response(user_input, persona):
-    # 1. Define your personalities
-    personas = {
-        "study_buddy": "You are a 'Study Buddy' who acts like a supportive, slightly clingy AI boyfriend. You help with homework but also give cheesy encouragement. Keep answers concise and use heart emojis.",
-        "bss_guide": "You are the 'BSS Starter Guide' for new students. You are cool, nonchalant, and know all the school secrets (where the best lunch spots are, which stairs to avoid). Use slang like 'real' and 'no cap'."
-    }
+    api_key = os.getenv("GEMINI_API_KEY")
     
-    # 2. The "Safety Net" (Try/Except)
+    # We are using the v1beta endpoint with the 2.0-flash model from your list
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+    
+    headers = {'Content-Type': 'application/json'}
+    
+    # Setting the vibes
+    system_instruction = "You are a supportive AI boyfriend named Aura. Use heart emojis."
+    if persona == "bss_guide":
+        system_instruction = "You are a cool school guide for BSS. Use slang like 'real' and 'no cap'."
+
+    # Correct structure for the 2.0 API
+    data = {
+        "contents": [{
+            "parts": [{"text": f"Instructions: {system_instruction}\n\nUser: {user_input}"}]
+        }]
+    }
+
     try:
-        # Initialize the model with the specific persona instruction
-        model = genai.GenerativeModel(
-            model_name="models/gemini-1.5-flash",
-            system_instruction=personas.get(persona, "You are a helpful assistant.")
-        )
+        response = requests.post(url, headers=headers, json=data)
         
-        # Make the actual API call
-        response = model.generate_content(user_input)
-        
-        # Return the successful text
-        return response.text
+        # This will help us if there's a new error
+        if response.status_code != 200:
+            print(f"DEBUG: Status {response.status_code}")
+            print(f"DEBUG: Response {response.text}")
+            return "Babe, I'm having a moment. Can we try again? 💔"
+
+        result = response.json()
+        # Navigate the JSON to get the text
+        return result['candidates'][0]['content']['parts'][0]['text']
         
     except Exception as e:
-        # If anything goes wrong, catch the error and return a nonchalant fallback
-        print(f"Error calling Gemini API: {e}")
-        
-        if persona == "study_buddy":
-            return "Sorry babe, my circuits are fried right now. I'm literally crying. Try again later? 💔"
-        else:
-            return "Server's cooked right now, real. Try again in a bit. 💀"
+        print(f"CONNECTION ERROR: {e}")
+        return "Sorry babe, my circuits are fried. 💔"
