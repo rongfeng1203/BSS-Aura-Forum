@@ -22,6 +22,19 @@ Quiz_content = [
         "type": "input",
         "acceptable_lengths": [3, 4, 5, 6],
         "feedback": "The acceptable skirt length is between 3 to 6 inches above the knee."
+    },
+    {
+        "question": "WHO is a hear me out?",
+        "options": ["A. Mr. Moffat", "B. Mr. Schruyburt", "C. Mr. Hosein", "D. Mr. MMcLeod"],
+        "answer": ["A", "B"],
+        "feedback": "Both Mr. Moffat and Mr. Schruyburt are known for their 'hear me out' moments."
+    },
+
+    {
+        "question": "Who has the most femboy potential?",
+        "options": ["A. Dr. Mizener", "B. Mr. Hosein", "C. Mr. Daveport", "D. Mr. Laidlaw"],
+        "answer": ["A", "B", "C", "D"],
+        "feedback": "THEY ALL HAVE THE MOST FEMBOY POTENTIAL."
     }
 
 ]
