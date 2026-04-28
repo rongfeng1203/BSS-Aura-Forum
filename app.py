@@ -8,14 +8,17 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     # Flask looks for this inside your 'templates' folder automatically
-    return render_template('GeminiStudyBuddy.html')
+    return render_template('chat.html')
 
 # Route for the AI Boyfriend / Study Buddy API logic
 @app.route('/study-buddy', methods=['POST'])
 def study_buddy():
-    user_message = request.json.get('message')
-    response = get_ai_response(user_message, "study_buddy")
-    return jsonify({"reply": response})
+    data = request.json
+    user_message = data.get("message")
+    persona = data.get("persona", "study_buddy") # Gets the persona from JS
+    
+    response = get_ai_response(user_message, persona)
+    return jsonify({"response": response})
 
 # Route for the BSS Starter Guide API logic
 @app.route('/bss-guide', methods=['POST'])

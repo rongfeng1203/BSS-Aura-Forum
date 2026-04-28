@@ -1,25 +1,43 @@
-document.getElementById('send-btn').addEventListener('click', sendMessage);
+let currentPersona = "study_buddy";
 
+function toggleTheme() {
+    const body = document.body;
+    const btn = document.getElementById("theme-toggle-btn");
+    const title = document.getElementById("persona-title");
+    const status = document.getElementById("status-msg");
+    
+    if (currentPersona === "study_buddy") {
+        body.classList.add("bss-theme");
+        currentPersona = "bss_guide";
+        btn.innerText = "Switch to AI Boyfriend";
+        title.innerText = "BSS // STUDENT_GUIDE_v1.0";
+        status.innerText = "BSS_GUIDE: YO, WELCOME TO THE SCHOOL. WHAT'S THE MOVE? 😤";
+    } else {
+        body.classList.remove("bss-theme");
+        currentPersona = "study_buddy";
+        btn.innerText = "Switch to BSS Guide";
+        title.innerText = "AURA // STUDY_BUDDY_v2.5";
+        status.innerText = "AURA_OS: READY FOR YOU, BABE. 💖";
+    }
+}
+
+// Update your existing send function to include the persona:
 async function sendMessage() {
-    const inputField = document.getElementById('user-input');
-    const message = inputField.value;
-    if (!message) return;
+    const input = document.getElementById("user-input");
+    const message = input.value;
+    
+    // ... your display logic ...
 
-    // 1. Display user message
-    appendMessage('YOU', message);
-    inputField.value = '';
-
-    // 2. Fetch from Python backend
-    const response = await fetch('/study-buddy', { // Change to /bss-guide if needed
+    const response = await fetch('/study-buddy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: message })
+        body: JSON.stringify({ 
+            message: message, 
+            persona: currentPersona // <--- THIS IS THE KEY
+        })
     });
-
-    const data = await response.json();
     
-    // 3. Display AI response
-    appendMessage('AI_CORE', data.reply);
+    // ... rest of function ...
 }
 
 function appendMessage(sender, text) {

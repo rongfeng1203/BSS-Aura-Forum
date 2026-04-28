@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BSS Aura Forum</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/dark.css') }}">
+</head>
+<body>
+
+    <button id="theme-toggle-btn" class="theme-switch" onclick="toggleTheme()">
+        Switch to BSS Guide
+    </button>
+
+    <div class="dark-web-container">
+        <div class="terminal-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <p id="persona-title" class="terminal-title">AURA // STUDY_BUDDY_v2.5</p>
+        </div>
+        
+        <div id="chat-window" class="chat-display">
+            <div class="ai-msg" id="status-msg">AURA_OS: CONNECTION STABLE. HEY BABE. 💖</div>
+        </div>
+
+        <div class="input-area">
+            <span class="prompt">></span>
+            <input type="text" id="user-input" placeholder="Enter message..." autocomplete="off">
+            <button id="send-btn" onclick="sendMessage()">SEND</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
