@@ -35,7 +35,7 @@ Quiz_content = [
         "options": ["A. Dr. Mizener", "B. Mr. Hosein", "C. Mr. Daveport", "D. Mr. Laidlaw"],
         "answer": ["A", "B", "C", "D"],
         "feedback": "THEY ALL HAVE THE MOST FEMBOY POTENTIAL."
-    }
+    },
 
 ]
 
