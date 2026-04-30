@@ -25,7 +25,7 @@ Quiz_content = [
     },
     {
         "question": "WHO is a hear me out?",
-        "options": ["A. Mr. Moffat", "B. Mr. Schruyburt", "C. Mr. Hosein", "D. Mr. MMcLeod"],
+        "options": ["A. Mr. Moffat", "B. Mr. Schruyburt", "C. Mr. Hosein", "D. Mr. McLeod"],
         "answer": ["A", "B"],
         "feedback": "Both Mr. Moffat and Mr. Schruyburt are known for their 'hear me out' moments."
     },
