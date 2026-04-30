@@ -1,42 +1,41 @@
 const express = require('express');
-const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-
 const app = express();
-const DATA_FILE = path.join(__currentDir, 'messages.json');
+const PORT = 3000;
+const DATA_FILE = './messages.json';
 
-app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname)); // Serves your index.html
 
-// Helper function to read/write JSON safely
-const readData = () => {
+// Helper to read JSON file
+const readMessages = () => {
     if (!fs.existsSync(DATA_FILE)) return [];
     const data = fs.readFileSync(DATA_FILE);
     return JSON.parse(data);
 };
 
-const saveData = (data) => {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-};
-
-// GET: Load messages
-app.get('/api/posts', (req, res) => {
-    res.json(readData());
+// GET: Fetch all messages
+app.get('/get_messages', (req, res) => {
+    res.json(readMessages());
 });
 
 // POST: Save a new message
-app.post('/api/posts', (req, res) => {
-    const posts = readData();
-    const newPost = {
-        id: Date.now(),
-        content: req.body.content,
-        created_at: new Date().toISOString()
+app.post('/post_message', (req, res) => {
+    const { text } = req.body;
+    if (!text) return res.status(400).send("Message empty");
+
+    const messages = readMessages();
+    const newMessage = {
+        text: text,
+        timestamp: new Date().toISOString()
     };
-    
-    posts.unshift(newPost); // Add to beginning of array
-    saveData(posts);
-    res.status(201).json(newPost);
+
+    messages.unshift(newMessage); // Add new post to top
+    fs.writeFileSync(DATA_FILE, JSON.stringify(messages, null, 2));
+    res.status(201).json(newMessage);
 });
 
-app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});

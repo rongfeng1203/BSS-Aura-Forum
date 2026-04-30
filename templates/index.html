@@ -137,46 +137,45 @@
         const submitBtn = document.getElementById('submitBtn');
         const feedContainer = document.getElementById('feed-container');
 
-        // Change '/api/messages' to '/get_messages'
+        // Fetch messages from Node.js server
         async function loadFeed() {
             try {
-                const response = await fetch('/get_messages'); // Matches Python @app.route('/get_messages')
+                const response = await fetch('/get_messages');
                 const messages = await response.json();
                 feedContainer.innerHTML = ''; 
                 messages.forEach(msg => {
-                feedContainer.appendChild(createPostCard(msg.text, msg.timestamp));
-            });
+                    feedContainer.appendChild(createPostCard(msg.text, msg.timestamp));
+                });
             } catch (err) {
-            console.error("Error loading feed:", err);
-        }
-}
-
-    // Change '/api/messages' to '/post_message'
-    async function sendMessage() {
-        const text = messageInput.value.trim();
-        if (!text) return;
-
-        try {
-            const response = await fetch('/post_message', { // Matches Python @app.route('/post_message')
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text })
-            });
-
-            if (response.ok) {
-            messageInput.value = '';
-            loadFeed(); 
+                console.error("Error loading feed:", err);
             }
-        } catch (err) {
-            console.error("Error sending message:", err);
         }
-}
+
+        // Send message to Node.js server
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            try {
+                const response = await fetch('/post_message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                if (response.ok) {
+                    messageInput.value = '';
+                    loadFeed(); // Refresh the list
+                }
+            } catch (err) {
+                console.error("Error sending message:", err);
+            }
+        }
 
         function getTimeAgo(timestamp) {
             const postTime = new Date(timestamp);
             const now = new Date();
             const secondsAgo = Math.floor((now - postTime) / 1000);
-
             if (secondsAgo < 60) return `just now`;
             if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)}m ago`;
             if (secondsAgo < 86400) return `${Math.floor(secondsAgo / 3600)}h ago`;
