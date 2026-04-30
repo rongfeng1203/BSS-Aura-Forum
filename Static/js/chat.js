@@ -1,25 +1,27 @@
+// At the top of your file, keep track of which persona is active
 let currentPersona = "study_buddy";
 
 function toggleTheme() {
     const body = document.body;
     const btn = document.getElementById("theme-toggle-btn");
     const title = document.getElementById("persona-title");
-    const status = document.getElementById("status-msg");
-    
+
     if (currentPersona === "study_buddy") {
+        // Switch to BSS Guide
         body.classList.add("bss-theme");
         currentPersona = "bss_guide";
         btn.innerText = "Switch to AI Boyfriend";
         title.innerText = "BSS // STUDENT_GUIDE_v1.0";
-        status.innerText = "BSS_GUIDE: YO, WELCOME TO THE SCHOOL. WHAT'S THE MOVE? 😤";
     } else {
+        // Switch back to AI Boyfriend
         body.classList.remove("bss-theme");
         currentPersona = "study_buddy";
         btn.innerText = "Switch to BSS Guide";
         title.innerText = "AURA // STUDY_BUDDY_v2.5";
-        status.innerText = "AURA_OS: READY FOR YOU, BABE. 💖";
     }
 }
+
+// Your existing sendMessage function should stay below this
 
 // Update your existing send function to include the persona:
 async function sendMessage() {
@@ -43,7 +45,13 @@ async function sendMessage() {
 function appendMessage(sender, text) {
     const chatWindow = document.getElementById('chat-window');
     const msgDiv = document.createElement('div');
-    msgDiv.innerHTML = `<p><strong>[${sender}]:</strong> ${text}</p>`;
+    msgDiv.style.marginBottom = "15px";
+
+    const label = sender === 'user' ? '[YOU]' : '[AI_CORE]';
+    
+    // Creates the [TAG]: Text format
+    msgDiv.innerHTML = `<span style="font-weight:bold;">${label}:</span> ${text}`;
+    
     chatWindow.appendChild(msgDiv);
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
