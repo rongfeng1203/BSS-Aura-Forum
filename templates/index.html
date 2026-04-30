@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum Dashboard</title>
     <style>
+        /* DARK THEME VARIABLES */
         :root {
             --bg-main: #181717;
             --sidebar-bg: #181717;
@@ -14,6 +15,7 @@
             --card-shadow: 0 4px 6px -1px rgba(170, 170, 170, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
+        /* GLOBAL STYLES */
         * { box-sizing: border-box; }
         body { 
             font-family: 'Inter', -apple-system, sans-serif; 
@@ -34,6 +36,7 @@
             flex-direction: column;
         }
 
+        /* NAV ITEMS */
         nav h2 { font-size: 1.2rem; color: var(--accent); margin-bottom: 30px; }
         .nav-item { 
             padding: 12px; 
@@ -42,6 +45,7 @@
             cursor: pointer; 
             margin-bottom: 5px;
             transition: 0.2s;
+            text-decoration: none;
         }
         .nav-item.active { background: #5b0c10; color: var(--accent);}
 
@@ -59,6 +63,7 @@
             margin-bottom: 30px;
         }
 
+        /* INPUT STYLES */
         input, textarea {
             width: 100%;
             background: black;
@@ -72,6 +77,7 @@
         }
         input:focus, textarea:focus { border-color: var(--accent); ring: 2px var(--accent); }
 
+        /* BUTTON STYLES */
         .btn-primary {
             background: #5b0c10;
             color: rgb(255, 255, 255);
@@ -99,7 +105,7 @@
         .post-header { display: flex; align-items: center; margin-bottom: 12px; }
 
         .post-time { font-size: 0.8rem; color: var(--text-muted); margin-left: auto; }
-        .post-body { color: #000000; line-height: 1.5; }
+        .post-body { color: #ccc; line-height: 1.5; white-space: pre-wrap; word-wrap: break-word; }
 
     </style>
 </head>
@@ -107,20 +113,9 @@
 
     <nav>
         <h2>BSSAuraForum</h2>
-        <a class="nav-item active">General Discussion</a>
-        <a class="nav-item">Study AI</a>
+        <a href="templates/index.html" class="nav-item active">General Discussion</a>
+        <a href="templates/GeminiStudyBuddy.html" class="nav-item">Study AI</a>
     </nav>
-
-    <script>
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function() {
-            // Remove 'active' class from all nav items
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            // Add 'active' class to the clicked item
-            this.classList.add('active');
-        });
-    });
-    </script>
 
     <main>
         <div class="header-row">
@@ -138,67 +133,71 @@
     </main>
 
     <script>
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Configuration
-        const PROXY_URL = 'insert proxy url here';
-        
-        const submitBtn = document.getElementById('submitBtn');
         const messageInput = document.getElementById('messageInput');
-        const statusMessage = document.getElementById('statusMessage');
+        const submitBtn = document.getElementById('submitBtn');
         const feedContainer = document.getElementById('feed-container');
 
-        // Post Submission
-        submitBtn.addEventListener('click', async () => {
-            const body = messageInput.value.trim();
-            
-            if (!body) {
-                statusMessage.innerText = "Please enter a message.";
-                return;
-            }
-
-            submitBtn.disabled = true;
-            statusMessage.innerText = "Syncing with GitHub...";
-
+        // Change '/api/messages' to '/get_messages'
+        async function loadFeed() {
             try {
-                const response = await fetch(PROXY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ body: body })
-                });
-
-                if (response.ok) {
-                    statusMessage.innerText = "Success! Post queued.";
-                    messageInput.value = '';
-                } else {
-                    statusMessage.innerText = "Error: Post failed.";
-                }
+                const response = await fetch('/get_messages'); // Matches Python @app.route('/get_messages')
+                const messages = await response.json();
+                feedContainer.innerHTML = ''; 
+                messages.forEach(msg => {
+                feedContainer.appendChild(createPostCard(msg.text, msg.timestamp));
+            });
             } catch (err) {
-                statusMessage.innerText = "Connection error.";
-            } finally {
-                submitBtn.disabled = false;
-            }
-        });
+            console.error("Error loading feed:", err);
+        }
+}
 
-        // 4. Feed Rendering Logic
-        // This helper creates the HTML for each card to match the .post-card CSS
+    // Change '/api/messages' to '/post_message'
+    async function sendMessage() {
+        const text = messageInput.value.trim();
+        if (!text) return;
+
+        try {
+            const response = await fetch('/post_message', { // Matches Python @app.route('/post_message')
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text })
+            });
+
+            if (response.ok) {
+            messageInput.value = '';
+            loadFeed(); 
+            }
+        } catch (err) {
+            console.error("Error sending message:", err);
+        }
+}
+
+        function getTimeAgo(timestamp) {
+            const postTime = new Date(timestamp);
+            const now = new Date();
+            const secondsAgo = Math.floor((now - postTime) / 1000);
+
+            if (secondsAgo < 60) return `just now`;
+            if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)}m ago`;
+            if (secondsAgo < 86400) return `${Math.floor(secondsAgo / 3600)}h ago`;
+            return postTime.toLocaleDateString();
+        }
+
         function createPostCard(text, time) {
             const card = document.createElement('div');
             card.className = 'post-card';
             card.innerHTML = `
                 <div class="post-header">
                     <strong style="color: white;">Anonymous User</strong>
-                    <span class="post-time">${time}</span>
+                    <span class="post-time">${getTimeAgo(time)}</span>
                 </div>
-                <div class="post-body" style="color: #ccc;">${text}</div>
+                <div class="post-body">${text}</div>
             `;
             return card;
         }
+
+        submitBtn.addEventListener('click', sendMessage);
+        window.addEventListener('DOMContentLoaded', loadFeed);
     </script>
     
 </body>
