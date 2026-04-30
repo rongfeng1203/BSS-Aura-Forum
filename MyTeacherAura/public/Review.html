@@ -123,6 +123,7 @@
                 cursor: pointer;
                 transition: transform 0.1s;
         }
+        #submit-review:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -142,10 +143,11 @@
             <input type="text" placeholder="Teacher Name">
             <div id="review-input">
                 <button style="font-size:2rem; width:100%; margin-bottom:12px; padding:20px 0;">&#128077;</button>
-                <button id="submit-review" class="btn-primary">Submit Review</button>
             </div>
+            <button id="submit-review" class="btn-primary">Submit Review</button>
         </div>
     </main>
+    <script src="script.js"></script>
 </body>
 <script src="{{ url_for('static', filename='js/forum.js') }}"></script>
 </html>
