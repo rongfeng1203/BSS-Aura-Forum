@@ -1,49 +1,86 @@
 from flask import Flask, render_template, request, jsonify
 from backend.gemini_api import get_ai_response
-import mysql.connector
 import os
-from dotenv import load_dotenv
+import json
 from datetime import datetime
+from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv('api.env')
 
 app = Flask(__name__)
 
-# Database configuration
-db_config = {
-    'host': os.getenv('DB_HOST'),
-    'user': os.getenv('DB_USER'),
-    'password': os.getenv('DB_PASSWORD'),
-    'database': os.getenv('DB_NAME')
-}
+# --- JSON FILE CONFIGURATION ---
+# This creates posts.json in your root folder if it doesn't exist
+POSTS_FILE = 'posts.json'
 
-def get_db_connection():
-    return mysql.connector.connect(**db_config)
+def init_json():
+    if not os.path.exists(POSTS_FILE):
+        with open(POSTS_FILE, 'w') as f:
+            json.dump([], f)
 
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS posts (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            content TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    conn.commit()
-    cursor.close()
-    conn.close()
+init_json()
 
-# Initialize database on startup
-init_db()
-
-# --- ADD THIS NEW ROUTE ---
-# This tells Flask: "When someone visits the home page, show the HTML file"
+# --- PAGE ROUTES ---
 @app.route('/')
 def index():
-    # Flask looks for this inside your 'templates' folder automatically
+    return render_template('index.html')
+
+@app.route('/review')
+def review():
+    return render_template('Review.html')
+
+@app.route('/teacher-aura')
+def teacher_aura():
+    return render_template('MyTeachersAura.html')
+
+@app.route('/my-review')
+def my_review():
+    return render_template('MyReview.html')
+
+@app.route('/chat')
+def chat():
     return render_template('chat.html')
+
+# --- FORUM API (JSON VERSION) ---
+
+@app.route('/api/posts', methods=['GET'])
+def get_posts():
+    try:
+        with open(POSTS_FILE, 'r') as f:
+            posts = json.load(f)
+        return jsonify(posts), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/posts', methods=['POST'])
+def create_post():
+    try:
+        data = request.get_json()
+        content = data.get('content', '').strip()
+
+        if not content:
+            return jsonify({'error': 'Content is required'}), 400
+
+        # Create the new post object
+        new_post = {
+            "id": int(datetime.now().timestamp()),
+            "content": content,
+            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        # Read existing, append, and save
+        with open(POSTS_FILE, 'r') as f:
+            posts = json.load(f)
+        
+        posts.insert(0, new_post) # Newest posts at the top
+
+        with open(POSTS_FILE, 'w') as f:
+            json.dump(posts, f, indent=4)
+
+        return jsonify({'message': 'Post created successfully'}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Route for the AI Boyfriend / Study Buddy API logic
 @app.route('/study-buddy', methods=['POST'])
@@ -62,45 +99,7 @@ def bss_guide():
     response = get_ai_response(user_message, "bss_guide")
     return jsonify({"reply": response})
 
-# Forum routes
-@app.route('/api/posts', methods=['POST'])
-def create_post():
-    try:
-        data = request.get_json()
-        content = data.get('content', '').strip()
-
-        if not content:
-            return jsonify({'error': 'Content is required'}), 400
-
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO posts (content) VALUES (%s)', (content,))
-        conn.commit()
-
-        post_id = cursor.lastrowid
-        cursor.close()
-        conn.close()
-
-        return jsonify({'message': 'Post created successfully', 'id': post_id}), 201
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/posts', methods=['GET'])
-def get_posts():
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute('SELECT id, content, created_at FROM posts ORDER BY created_at DESC')
-        posts = cursor.fetchall()
-        cursor.close()
-        conn.close()
-
-        return jsonify(posts), 200
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# --- ADD THIS AT THE VERY BOTTOM ---
 if __name__ == '__main__':
-    app.run(debug=True, port=5001) # Change 5000 to 5001
+    app.run(debug=True, port=5001)
+
+
