@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
-from backend.gemini_api import get_ai_response
+import sys
 import os
+from backend.gemini_api import get_ai_response
 import json
 from datetime import datetime
 from dotenv import load_dotenv
