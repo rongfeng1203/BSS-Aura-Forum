@@ -1,25 +1,19 @@
 from flask import Flask, render_template, request, jsonify
-import sys
 import os
 from backend.gemini_api import get_ai_response
-import json
 from datetime import datetime
 from dotenv import load_dotenv
 
-load_dotenv('api.env')
+# Load environment variables
+load_dotenv()
+load_dotenv('api.env', override=True)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
-# --- JSON FILE CONFIGURATION ---
-# This creates posts.json in your root folder if it doesn't exist
-POSTS_FILE = 'posts.json'
-
-def init_json():
-    if not os.path.exists(POSTS_FILE):
-        with open(POSTS_FILE, 'w') as f:
-            json.dump([], f)
-
-init_json()
+# --- IN-MEMORY POSTS STORAGE ---
+# Serverless functions don't have persistent filesystem, so we use in-memory storage
+# For production, consider using a database like Supabase or Neon
+posts_storage = []
 
 # --- PAGE ROUTES ---
 @app.route('/')
@@ -47,9 +41,7 @@ def chat():
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
     try:
-        with open(POSTS_FILE, 'r') as f:
-            posts = json.load(f)
-        return jsonify(posts), 200
+        return jsonify(posts_storage), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -69,14 +61,8 @@ def create_post():
             "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
-        # Read existing, append, and save
-        with open(POSTS_FILE, 'r') as f:
-            posts = json.load(f)
-        
-        posts.insert(0, new_post) # Newest posts at the top
-
-        with open(POSTS_FILE, 'w') as f:
-            json.dump(posts, f, indent=4)
+        # Add to in-memory storage
+        posts_storage.insert(0, new_post)  # Newest posts at the top
 
         return jsonify({'message': 'Post created successfully'}), 201
 
@@ -100,6 +86,8 @@ def bss_guide():
     response = get_ai_response(user_message, "bss_guide")
     return jsonify({"reply": response})
 
+# Vercel requires 'app' to be exported for WSGI
+# For local development
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
 
