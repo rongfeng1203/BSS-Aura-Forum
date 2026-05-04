@@ -136,23 +136,49 @@
     </main>
 
     <script>
-        const messageInput = document.getElementById('messageInput');
-        const submitBtn = document.getElementById('submitBtn');
-        const feedContainer = document.getElementById('feed-container');
+    const messageInput = document.getElementById('messageInput');
+    const submitBtn = document.getElementById('submitBtn');
+    const feedContainer = document.getElementById('feed-container');
 
-        // Fetch messages from Node.js server
-        async function loadFeed() {
-            try {
-                const response = await fetch('/get_messages');
-                const messages = await response.json();
-                feedContainer.innerHTML = ''; 
-                messages.forEach(msg => {
-                    feedContainer.appendChild(createPostCard(msg.text, msg.timestamp));
-                });
-            } catch (err) {
-                console.error("Error loading feed:", err);
-            }
+    // Posting the message
+    submitBtn.addEventListener('click', async () => {
+    const content = messageInput.value.trim();
+    if (!content) return;
+
+    try {
+        const response = await fetch('/api/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content: content }) // Key must be "content"
+        });
+
+        if (response.ok) {
+            messageInput.value = ''; // Clear input
+            loadMessages(); // Refresh the list
+        } else {
+            alert("Server error: " + response.status);
         }
+    } catch (err) {
+        console.error("Transmission error:", err);
+    }
+    });
+
+    // Loading the messages
+    async function loadMessages() {
+    const res = await fetch('/api/messages');
+    const data = await res.json();
+    feedContainer.innerHTML = data.map(msg => `
+        <div class="post-card">
+            <div class="post-header">
+                <strong>Anonymous</strong>
+                <span class="post-time">${msg.timestamp}</span>
+            </div>
+            <div class="post-body">${msg.content}</div>
+        </div>
+    `).join('');
+    }
+
+    loadMessages(); // Call on page load
 
         // Send message to Node.js server
         async function sendMessage() {

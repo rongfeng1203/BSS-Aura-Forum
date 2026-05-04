@@ -3,39 +3,52 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 const PORT = 3000;
-const DATA_FILE = './messages.json';
 
 app.use(express.json());
-app.use(express.static(__dirname)); // Serves your index.html
 
-// Helper to read JSON file
-const readMessages = () => {
-    if (!fs.existsSync(DATA_FILE)) return [];
-    const data = fs.readFileSync(DATA_FILE);
-    return JSON.parse(data);
+// 1. Point Express to the 'templates' folder
+app.use(express.static(path.join(__dirname, 'templates')));
+
+const DATA_FILE = path.join(__dirname, 'messages.json');
+
+// Helper to read messages
+const getMessages = () => {
+    try {
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (err) {
+        return [];
+    }
 };
 
+// 2. Explicitly route the root URL to index.html inside the templates folder
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'templates', 'index.html'));
+});
+
 // GET: Fetch all messages
-app.get('/get_messages', (req, res) => {
-    res.json(readMessages());
+app.get('/api/messages', (req, res) => {
+    res.json(getMessages());
 });
 
 // POST: Save a new message
-app.post('/post_message', (req, res) => {
-    const { text } = req.body;
-    if (!text) return res.status(400).send("Message empty");
+app.post('/api/messages', (req, res) => {
+    const { content } = req.body;
+    if (!content) return res.status(400).json({ error: "Content required" });
 
-    const messages = readMessages();
+    const messages = getMessages();
     const newMessage = {
-        text: text,
-        timestamp: new Date().toISOString()
+        id: Date.now(),
+        content: content,
+        timestamp: new Date().toLocaleString()
     };
 
-    messages.unshift(newMessage); // Add new post to top
+    messages.unshift(newMessage);
     fs.writeFileSync(DATA_FILE, JSON.stringify(messages, null, 2));
+    
     res.status(201).json(newMessage);
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Forum running at http://localhost:${PORT}`);
 });
