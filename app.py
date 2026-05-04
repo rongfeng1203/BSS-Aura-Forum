@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, jsonify
-import sys
 import os
 from backend.gemini_api import get_ai_response
 import json
 from datetime import datetime
 from dotenv import load_dotenv
 
-load_dotenv('api.env')
+# Load environment variables
+load_dotenv()
+load_dotenv('api.env', override=True)
 
 app = Flask(__name__)
 
@@ -100,6 +101,8 @@ def bss_guide():
     response = get_ai_response(user_message, "bss_guide")
     return jsonify({"reply": response})
 
+# Vercel requires 'app' to be exported for WSGI
+# For local development
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
 
