@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 load_dotenv('api.env', override=True)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='Static', static_url_path='/static')
 
 # --- IN-MEMORY POSTS STORAGE ---
 # Serverless functions don't have persistent filesystem, so we use in-memory storage
