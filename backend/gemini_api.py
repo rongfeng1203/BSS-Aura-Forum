@@ -1,37 +1,51 @@
 import os
-import google.generativeai as genai
+import requests
 
-# Lazy configuration - will be configured on first use
-_configured = False
+def get_ai_response(user_input, persona):
+    api_key = os.getenv("GEMINI_API_KEY")
 
-def _ensure_configured():
-    global _configured
-    if not _configured:
-        api_key = os.getenv('GEMINI_API_KEY')
-        if api_key:
-            genai.configure(api_key=api_key)
-            _configured = True
+    # Using the v1beta endpoint with the 2.5-flash model
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
 
-# Define personas
-PERSONAS = {
-    "study_buddy": """You are a friendly and encouraging study buddy. Help students understand 
-    concepts, quiz them on material, and provide helpful study tips. Be supportive and patient.""",
+    headers = {'Content-Type': 'application/json'}
+
+    # Setting the vibes
+    system_instruction = "You are a supportive AI boyfriend named Aura. Use heart emojis."
+    if persona == "bss_guide":
+        school_facts = """
+        - Cafeteria: Border's dining hall is always busy around 12:00, try the hub down stairs.
+        - Theatre: Best place to lock in, but it's always locked and rumour has it people 💋💋 in there.
+        - Skipping class: The best way to skip is to say you have a headache, but the nurse is pretty chill if you just want to hang out in the office. 
+        - Community time: No one cares about community time, but it's a good chance to catch up on homework or just vibe with friends. (find a washroom and hide well)
+        - Chapel: Teachers will haunt you if you skip one of these, infraction warning!
+        - Uniform: 3 in above your knee and BSS socks, who know why they stare at your foot
+        - Washroom: Smelliest bathroom is always beside student center, the best one is beside think tank / art room. 
+        """
+        system_instruction = f"""
+        You are the 'BSS Aura Guide'. You are a cool, older student. 
+        Use slang like 'real', 'no cap', 'mid', 'cracked', and 'lock in'.
+        Keep it helpful but funny. 
+        Here is the school info: {school_facts}
+        """
     
-    "bss_guide": """You are the BSS (school) Starter Guide assistant. Help new students navigate 
-    the school, answer questions about classes, activities, and provide useful tips for success.""",
-}
+    # Correct structure for the 2.0 API
+    data = {
+        "contents": [{
+            "parts": [{"text": f"Instructions: {system_instruction}\n\nUser: {user_input}"}]
+        }]
+    }
 
-def get_ai_response(user_message: str, persona: str = "study_buddy") -> str:
-    """Get a response from the Gemini AI with the specified persona."""
     try:
-        _ensure_configured()
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        
-        system_prompt = PERSONAS.get(persona, PERSONAS["study_buddy"])
-        
-        chat = model.start_chat(history=[])
-        response = chat.send_message(f"{system_prompt}\n\nUser: {user_message}")
-        
-        return response.text
+        response = requests.post(url, headers=headers, json=data)
+
+        if response.status_code != 200:
+            print(f"DEBUG: Status {response.status_code}")
+            print(f"DEBUG: Response {response.text}")
+            return "Babe, I'm having a moment. Can we try again? 💔"
+
+        result = response.json()
+        return result['candidates'][0]['content']['parts'][0]['text']
+
     except Exception as e:
-        return f"Sorry, I encountered an error: {str(e)}"
+        print(f"CONNECTION ERROR: {e}")
+        return f"Sorry, I encountered an error: {e}"
