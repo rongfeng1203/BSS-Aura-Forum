@@ -6,7 +6,7 @@ def get_ai_response(user_input, persona):
 
     # We are using the v1beta endpoint with the 2.0-flash model from your list
     # \using the v1beta endpoint with the 2.0-flash model 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key={api_key}"
 
     headers = {'Content-Type': 'application/json'}
 
