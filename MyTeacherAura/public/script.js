@@ -18,14 +18,13 @@ function createPostCard(course, teacher, rating, timestamp) {
 // Function to fetch and display reviews
 async function updateReviewsList() {
     if (!reviewsContainer) return; // Safely stop if not on the Dashboard
-    try {
-        const response = await fetch('http://localhost:3001/api/reviews');
+   try {
+        const response = await fetch('http://localhost:3001/api/reviews', {
+            cache: 'no-cache' // This forces the browser to ignore the cache
+        });
         const reviews = await response.json();
         
-        reviewsContainer.innerHTML = ''; 
-        reviews.forEach(review => {
-            reviewsContainer.appendChild(createPostCard(review.course, review.teacher, review.rating, review.timestamp));
-        });
+        // ... rest of your code to display the reviews ...
     } catch (error) {
         console.error('Failed to load reviews:', error);
     }
