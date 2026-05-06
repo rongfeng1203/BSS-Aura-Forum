@@ -2,13 +2,13 @@
 const reviewsContainer = document.getElementById('reviews-container');
 
 // --- SHARED LOGIC ---
-function createPostCard(course, teacher, rating, time) {
+function createPostCard(course, teacher, rating, timestamp) {
     const card = document.createElement('div');
     card.className = 'post-card';
     card.innerHTML = `
         <div class="post-header">
             <strong>${course} - ${teacher}</strong>
-            <span class="post-time">${new Date(time).toLocaleDateString()}</span>
+            <span class="post-time">${new Date(timestamp).toLocaleDateString()}</span>
         </div>
         <div class="post-body">${rating}</div>
     `;
@@ -64,7 +64,8 @@ if (submitBtn) {
             body: JSON.stringify({ 
                 course: course, 
                 teacher: teacher, 
-                rating: '👍' 
+                rating: '👍',
+                timestamp: new Date().toISOString()
             })
         });
 
