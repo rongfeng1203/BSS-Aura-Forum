@@ -11,8 +11,8 @@ app.use(express.json());
 app.get('/api/reviews', (req, res) => {
     console.log("Fetching reviews..."); 
     let data = [];
-    if (fs.existsSync('./MyTeacherAura/data/reviews.json')) {
-        const fileContent = fs.readFileSync('./MyTeacherAura/data/reviews.json', 'utf8');
+    if (fs.existsSync('./data/reviews.json')) {
+        const fileContent = fs.readFileSync('./data/reviews.json', 'utf8');
         data = JSON.parse(fileContent);
     }
     res.json(data);
@@ -28,12 +28,12 @@ app.post('/rate', (req, res) => {
     };
     
     let data = [];
-    if (fs.existsSync('./MyTeacherAura/data/reviews.json')) {
-        data = JSON.parse(fs.readFileSync('./MyTeacherAura/data/reviews.json', 'utf8'));
+    if (fs.existsSync('./data/reviews.json')) {
+        data = JSON.parse(fs.readFileSync('./data/reviews.json', 'utf8'));
     }
     
     data.push(newEntry);
-    fs.writeFileSync('./MyTeacherAura/data/reviews.json', JSON.stringify(data, null, 2));
+    fs.writeFileSync('./data/reviews.json', JSON.stringify(data, null, 2));
     res.send({ status: 'success' });
 });
 

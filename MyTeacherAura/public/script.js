@@ -71,6 +71,8 @@ if (submitBtn) {
 
         if (response.ok) {
             alert('Kudos sent!');
+            course.value = '';
+            teacher.value = '';
             window.location.href = 'MyTeachersAura.html'; // Redirect
         }
     });
