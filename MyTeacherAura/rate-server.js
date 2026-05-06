@@ -36,4 +36,4 @@ app.post('/rate', (req, res) => {
     res.send({ status: 'success' });
 });
 
-app.listen(3000, () => console.log('Forum running at http://localhost:3000'));
+app.listen(3001, () => console.log('Rate Server running on http://localhost:3001'));

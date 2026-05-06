@@ -19,7 +19,7 @@ function createPostCard(course, teacher, rating, time) {
 async function updateReviewsList() {
     if (!reviewsContainer) return; // Safely stop if not on the Dashboard
     try {
-        const response = await fetch('http://localhost:3000/api/reviews');
+        const response = await fetch('http://localhost:3001/api/reviews');
         const reviews = await response.json();
         
         reviewsContainer.innerHTML = ''; 
@@ -58,7 +58,7 @@ if (submitBtn) {
         if (!isSelected) return alert('Please click the thumbs up!');
         if (!course || !teacher) return alert('Please fill in both fields!');
 
-        const response = await fetch('http://localhost:3000/rate', {
+        const response = await fetch('http://localhost:3001/rate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
