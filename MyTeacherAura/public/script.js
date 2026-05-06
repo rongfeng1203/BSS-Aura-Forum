@@ -70,7 +70,7 @@ if (submitBtn) {
 
         if (response.ok) {
             alert('Kudos sent!');
-            window.location.href = 'MyTeacherAura.html'; // Redirect
+            window.location.href = 'MyTeachersAura.html'; // Redirect
         }
     });
 }
