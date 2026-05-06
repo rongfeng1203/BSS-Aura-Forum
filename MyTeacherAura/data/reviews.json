@@ -1,1 +1,8 @@
-[]
+[
+    {
+        "course": "TEST",
+        "teacher": "TEST",
+        "rating": "👍",
+        "timestamp": "2026-05-06T..."
+    }
+]
