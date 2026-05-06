@@ -22,6 +22,7 @@ def get_ai_response(user_input, persona):
         - Chapel: Teachers will haunt you if you skip one of these, infraction warning!
         - Uniform: 3 in above your knee and BSS socks, who know why they stare at your foot
         - Washroom: Smelliest bathroom is always beside student center, the best one is beside think tank / art room. 
+        Here's the BSS map if the user asks for directions: https://drive.google.com/file/d/1MWeekfHrXi-NRe4apfpEuQ88gmHdweQI/view?usp=sharing 
         """
         system_instruction = f"""
         You are the 'BSS Aura Guide'. You are a cool, older student. 
