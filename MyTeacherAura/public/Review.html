@@ -48,10 +48,8 @@
             cursor: pointer; 
             margin-bottom: 5px;
             transition: 0.2s;
-            
         }
 
-       
         .nav-item.active { background: #5b0c10; color: var(--accent);}
 
         /* MAIN CONTENT */
@@ -80,18 +78,7 @@
             outline: none;
         }
         input:focus, textarea:focus { border-color: var(--accent); }
-        .btn-primary {
-            background: #5b0c10;
-            color: rgb(255, 255, 255);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-
+        
         /* FEED CARDS */
         .post-card {
             background: rgb(126, 120, 120);
@@ -105,49 +92,70 @@
         .post-card:hover { border-color: var(--accent); }
         
         .post-header { display: flex; align-items: center; margin-bottom: 12px; }
-
         .post-time { font-size: 0.8rem; color: var(--text-muted); margin-left: auto; }
         .post-body { color: #000000; line-height: 1.5; }
-        #review-input { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
+
+        .thumbs-up-btn {
+            font-size: 2rem;
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 20px 0;
+            background: #222;
+            border: 1px solid #444;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .thumbs-up-btn:hover { background: #333; }
+
         #submit-review {
-                background: #5b0c10;
-                color: rgb(255, 255, 255);
-                border: none;
-                padding: 12px 24px;
-                border-radius: 10px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.1s;
+            background: #5b0c10;
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+            width: 100%;
         }
         #submit-review:hover { opacity: 0.9; transform: translateY(-1px); }
+        .course-name, .teacher-name {
+            margin-bottom: 12px;
+        }
     </style>
 </head>
 <body>
     <nav>
         <h2>My Teachers Aura</h2>
+<<<<<<< HEAD
             <div class="nav-item"><a href="/">Home</a></div>
             <div class="nav-item"><a href="/teacher-aura">Dashboard</a></div>
             <div class="nav-item"><a href="/my-review">My Reviews</a></div>
             <div class="nav-item active"><a href="/review">Kudos your Teacher</a></div>
+=======
+        <div class="nav-item"><a href="index.html">Home</a></div>
+        <div class="nav-item"><a href="MyTeachersAura.html">Dashboard</a></div>
+        <div class="nav-item"><a href="MyReview.html">My Reviews</a></div>
+        <div class="nav-item active"><a href="#">Kudos your Teacher</a></div>
+>>>>>>> 3ace463 (saves)
     </nav>
     <main>
         <div class="header-row">
             <h1>Kudos your Teacher</h1>
         </div>
         <div class="input-card">
-            <input type="text" placeholder="Course Name">
-            <input type="text" placeholder="Teacher Name">
-            <div id="review-input">
-                <button style="font-size:2rem; width:100%; margin-bottom:12px; padding:20px 0;">&#128077;</button>
-            </div>
-            <button id="submit-review" class="btn-primary">Submit Review</button>
+            <input type="text" id="course-name" placeholder="Course Name">
+            <input type="text" id="teacher-name" placeholder="Teacher Name">
+            
+            <button id="thumbs-up-btn" class="thumbs-up-btn">&#128077;</button>
+            
+            <button id="submit-review">Submit Review</button>
         </div>
+
+        <div id="reviews-container"></div>
     </main>
+
     <script src="script.js"></script>
 </body>
-<script src="{{ url_for('static', filename='js/forum.js') }}"></script>
 </html>
