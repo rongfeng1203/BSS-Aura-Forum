@@ -24,7 +24,10 @@ async function updateReviewsList() {
         });
         const reviews = await response.json();
         
-        // ... rest of your code to display the reviews ...
+        reviewsContainer.innerHTML = ''; 
+        reviews.forEach(review => {
+            reviewsContainer.appendChild(createPostCard(review.course, review.teacher, review.rating, review.timestamp));
+        });
     } catch (error) {
         console.error('Failed to load reviews:', error);
     }
