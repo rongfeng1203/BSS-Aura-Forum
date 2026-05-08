@@ -1,1 +1,7 @@
-[]
+[
+    {
+        "id": 1,
+        "content": "This is a sample message.",
+        "timestamp": "2023-10-01 12:00:00"
+    }
+]
