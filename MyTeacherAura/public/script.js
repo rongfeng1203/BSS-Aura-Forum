@@ -19,7 +19,7 @@ function createPostCard(course, teacher, rating, timestamp) {
 async function updateReviewsList() {
     if (!reviewsContainer) return; // Safely stop if not on the Dashboard
    try {
-        const response = await fetch('http://localhost:3001/api/reviews', {
+        const response = await fetch('/api/reviews', {
             cache: 'no-cache' // This forces the browser to ignore the cache
         });
         const reviews = await response.json();
@@ -60,7 +60,7 @@ if (submitBtn) {
         if (!isSelected) return alert('Please click the thumbs up!');
         if (!course || !teacher) return alert('Please fill in both fields!');
 
-        const response = await fetch('http://localhost:3001/rate', {
+        const response = await fetch('/rate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -73,9 +73,9 @@ if (submitBtn) {
 
         if (response.ok) {
             alert('Kudos sent!');
-            course.value = '';
-            teacher.value = '';
-            window.location.href = 'MyTeachersAura.html'; // Redirect
+            document.getElementById('course-name').value = '';
+            document.getElementById('teacher-name').value = '';
+            window.location.href = '/teacher-aura'; // Redirect
         }
     });
 }

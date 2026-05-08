@@ -128,10 +128,11 @@
 <body>
     <nav>
         <h2>My Teachers Aura</h2>
-        <div class="nav-item"><a href="/index.html">Home</a></div>
-        <div class="nav-item"><a href="/MyTeachersAura.html">Dashboard</a></div>
-        <div class="nav-item"><a href="/MyReview.html">My Reviews</a></div>
-        <div class="nav-item active"><a href="#">Kudos your Teacher</a></div>
+        <div class="nav-item"><a href="{{ url_for('forum') }}">Home</a></div>
+        <div class="nav-item"><a href="{{ url_for('chat') }}">Study AI</a></div>
+        <div class="nav-item"><a href="{{ url_for('teacher_aura') }}">Dashboard</a></div>
+        <div class="nav-item"><a href="{{ url_for('my_review') }}">My Reviews</a></div>
+        <div class="nav-item active"><a href="{{ url_for('review') }}">Kudos your Teacher</a></div>
     </nav>
     <main>
         <div class="header-row">
@@ -147,6 +148,6 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <script src="{{ url_for('teacher_asset', filename='script.js') }}"></script>
 </body>
 </html>

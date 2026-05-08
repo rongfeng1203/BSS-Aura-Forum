@@ -112,18 +112,19 @@
 <body>
     <nav>
         <h2>My Teachers Aura</h2>
-            <div class="nav-item"><a href="/Templates/index.html">Home</a></div>
-            <div class="nav-item active"><a href="#">Dashboard</a></div>
-            <div class="nav-item"><a href="MyReview.html">My Reviews</a></div>
-            <div class="nav-item"><a href="Review.html">Kudos your Teacher</a></div>
+            <div class="nav-item"><a href="{{ url_for('forum') }}">Home</a></div>
+            <div class="nav-item"><a href="{{ url_for('chat') }}">Study AI</a></div>
+            <div class="nav-item active"><a href="{{ url_for('teacher_aura') }}">Dashboard</a></div>
+            <div class="nav-item"><a href="{{ url_for('my_review') }}">My Reviews</a></div>
+            <div class="nav-item"><a href="{{ url_for('review') }}">Kudos your Teacher</a></div>
     </nav>
     <main>
         <div class="header-row">
             <h1>Welcome to My Teachers Aura!</h1>
-            <button class="btn-primary"><a href="Review.html">Kudos your Teacher</a></button>
+            <button class="btn-primary"><a href="{{ url_for('review') }}">Kudos your Teacher</a></button>
         </div>
         <div id="reviews-container"></div>
     </main>
 </body>
-<script src="script.js"></script>
+<script src="{{ url_for('teacher_asset', filename='script.js') }}"></script>
 </html>   

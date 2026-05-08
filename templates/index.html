@@ -117,11 +117,11 @@
 
     <nav>
         <h2>BSSAuraForum</h2>
-            <div class="nav-item active"><a href="/index.html">Home</a></div>
-            <div class="nav-item"><a href="/chat.html">Study AI</a></div>
-            <div class="nav-item"><a href="/MyTeachersAura.html">Dashboard</a></div>
-            <div class="nav-item"><a href="/MyReview.html">My Reviews</a></div>
-            <div class="nav-item"><a href="/Review.html">Kudos your Teacher</a></div>
+            <div class="nav-item active"><a href="{{ url_for('forum') }}">Home</a></div>
+            <div class="nav-item"><a href="{{ url_for('chat') }}">Study AI</a></div>
+            <div class="nav-item"><a href="{{ url_for('teacher_aura') }}">Dashboard</a></div>
+            <div class="nav-item"><a href="{{ url_for('my_review') }}">My Reviews</a></div>
+            <div class="nav-item"><a href="{{ url_for('review') }}">Kudos your Teacher</a></div>
 
     </nav>
 
@@ -147,7 +147,7 @@
         // 1. Loading messages
         async function loadMessages() {
             try {
-                const res = await fetch('http://localhost:3000/api/messages');
+                const res = await fetch('/api/messages');
                 const data = await res.json();
                 
                 if (!data || data.length === 0) {
