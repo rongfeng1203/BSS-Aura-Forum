@@ -48,8 +48,16 @@ def get_posts():
 @app.route('/api/posts', methods=['POST'])
 def create_post():
     try:
+        print("[v0] POST /api/posts called")
         data = request.get_json()
+        print(f"[v0] Request data: {data}")
+        
+        if not data:
+            print("[v0] No JSON data received")
+            return jsonify({'error': 'No data received'}), 400
+            
         content = data.get('content', '').strip()
+        print(f"[v0] Content: {content}")
 
         if not content:
             return jsonify({'error': 'Content is required'}), 400
@@ -63,10 +71,13 @@ def create_post():
 
         # Add to in-memory storage
         posts_storage.insert(0, new_post)  # Newest posts at the top
+        print(f"[v0] Post created: {new_post}")
+        print(f"[v0] Total posts: {len(posts_storage)}")
 
-        return jsonify({'message': 'Post created successfully'}), 201
+        return jsonify({'message': 'Post created successfully', 'post': new_post}), 201
 
     except Exception as e:
+        print(f"[v0] Error creating post: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 # Route for the AI Boyfriend / Study Buddy API logic
