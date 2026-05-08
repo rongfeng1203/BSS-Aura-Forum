@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RateMyTeach</title>
+    <title>My Teachers Aura</title>
     <style>
         :root {
             --bg-main: #181717;
@@ -32,6 +32,7 @@
             display: flex;
             flex-direction: column;
         }
+        
         nav a {
             text-decoration: none; 
             color: inherit;       
@@ -41,15 +42,12 @@
 
         nav h2 { font-size: 1.2rem; color: var(--accent); margin-bottom: 30px; }
         .nav-item { 
-            text-decoration: none;
-            color: #d1d5db;
             border-radius: 8px; 
-            color: #ffffff; 
+            color: var(--text-muted); 
             cursor: pointer; 
             margin-bottom: 5px;
             transition: 0.2s;
         }
-
         .nav-item.active { background: #5b0c10; color: var(--accent);}
 
         /* MAIN CONTENT */
@@ -78,7 +76,20 @@
             outline: none;
         }
         input:focus, textarea:focus { border-color: var(--accent); }
-        
+
+        .btn-primary {
+            background: #5b0c10;
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary a { text-decoration: none; color: inherit; }
+
         /* FEED CARDS */
         .post-card {
             background: rgb(126, 120, 120);
@@ -92,62 +103,34 @@
         .post-card:hover { border-color: var(--accent); }
         
         .post-header { display: flex; align-items: center; margin-bottom: 12px; }
+
         .post-time { font-size: 0.8rem; color: var(--text-muted); margin-left: auto; }
         .post-body { color: #000000; line-height: 1.5; }
 
-        .thumbs-up-btn {
-            font-size: 2rem;
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 20px 0;
-            background: #222;
-            border: 1px solid #444;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .thumbs-up-btn:hover { background: #333; }
-
-        #submit-review {
-            background: #5b0c10;
-            color: rgb(255, 255, 255);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s;
-            width: 100%;
-        }
-        #submit-review:hover { opacity: 0.9; transform: translateY(-1px); }
-        .course-name, .teacher-name {
-            margin-bottom: 12px;
-        }
     </style>
 </head>
 <body>
     <nav>
         <h2>My Teachers Aura</h2>
-        <div class="nav-item"><a href="{{ url_for('forum') }}">Home</a></div>
-        <div class="nav-item"><a href="{{ url_for('chat') }}">Study AI</a></div>
-        <div class="nav-item"><a href="{{ url_for('teacher_aura') }}">Dashboard</a></div>
-        <div class="nav-item"><a href="{{ url_for('my_review') }}">My Reviews</a></div>
-        <div class="nav-item active"><a href="{{ url_for('review') }}">Kudos your Teacher</a></div>
+<<<<<<< HEAD
+            <div class="nav-item"><a href="{{ url_for('forum') }}">Home</a></div>
+            <div class="nav-item"><a href="{{ url_for('chat') }}">Study AI</a></div>
+            <div class="nav-item active"><a href="{{ url_for('teacher_aura') }}">Dashboard</a></div>
+            <div class="nav-item"><a href="{{ url_for('my_review') }}">My Reviews</a></div>
+            <div class="nav-item"><a href="{{ url_for('review') }}">Kudos your Teacher</a></div>
+=======
+            <div class="nav-item"><a href="/Templates/index.html">Home</a></div>
+            <div class="nav-item active"><a href="#">Dashboard</a></div>
+            <div class="nav-item"><a href="Review.html">Kudos your Teacher</a></div>
+>>>>>>> 08064cf (delete)
     </nav>
     <main>
         <div class="header-row">
-            <h1>Kudos your Teacher</h1>
+            <h1>Welcome to My Teachers Aura!</h1>
+            <button class="btn-primary"><a href="{{ url_for('review') }}">Kudos your Teacher</a></button>
         </div>
-        <div class="input-card">
-            <input type="text" id="course-name" placeholder="Course Name">
-            <input type="text" id="teacher-name" placeholder="Teacher Name">
-            
-            <button id="thumbs-up-btn" class="thumbs-up-btn">&#128077;</button>
-            
-            <button id="submit-review">Submit Review</button>
-        </div>
+        <div id="reviews-container"></div>
     </main>
-
-    <script src="{{ url_for('teacher_asset', filename='script.js') }}"></script>
 </body>
-</html>
+<script src="{{ url_for('teacher_asset', filename='script.js') }}"></script>
+</html>   
