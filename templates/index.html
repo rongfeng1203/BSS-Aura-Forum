@@ -19,7 +19,7 @@
         * { box-sizing: border-box; }
         body { 
             font-family: 'Inter', -apple-system, sans-serif; 
-            background-color: var(--bg-main);   
+            background-color: var(--bg-main); 
             margin: 0; 
             display: flex; 
             height: 100vh; 
@@ -37,6 +37,7 @@
 
         nav h2 { font-size: 1.2rem; color: var(--accent); margin-bottom: 30px; }
         .nav-item { 
+            padding: 12px; 
             border-radius: 8px; 
             color: var(--text-muted); 
             cursor: pointer; 
@@ -97,8 +98,6 @@
         nav a,
         .nav-item a {
         color: inherit;
-        display: block;
-        padding: 12px;
         text-decoration: none;
         }
 
@@ -146,24 +145,24 @@
         const submitBtn = document.getElementById('submitBtn');
         const feedContainer = document.getElementById('feed-container');
 
-        // 1. Loading messages
+        // 1. Loading posts
         async function loadMessages() {
             try {
-                const res = await fetch('/api/messages');
+                const res = await fetch('/api/posts');
                 const data = await res.json();
                 
                 if (!data || data.length === 0) {
-                    feedContainer.innerHTML = '<p style="color:white;">No messages yet.</p>';
+                    feedContainer.innerHTML = '<p style="color:white;">No posts yet. Be the first to share!</p>';
                     return;
                 }
 
-                feedContainer.innerHTML = data.map(msg => `
+                feedContainer.innerHTML = data.map(post => `
                     <div class="post-card">
                         <div class="post-header">
                             <strong>Anonymous</strong>
-                            <span class="post-time">${msg.timestamp || 'Recent'}</span>
+                            <span class="post-time">${post.created_at || 'Recent'}</span>
                         </div>
-                        <div class="post-body">${msg.content}</div>
+                        <div class="post-body">${post.content}</div>
                     </div>
                 `).join('');
             } catch (err) {
@@ -171,7 +170,7 @@
             }
         }
 
-        // 2. Sending messages
+        // 2. Sending posts
         async function postMessage() {
             const content = messageInput.value.trim();
             if (!content) return;
@@ -179,7 +178,7 @@
             submitBtn.disabled = true;
 
             try {
-                const response = await fetch('/api/messages', {
+                const response = await fetch('/api/posts', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content: content }) 
@@ -190,7 +189,7 @@
                     loadMessages(); 
                 }
             } catch (err) {
-                console.error("Error sending message:", err);
+                console.error("Error sending post:", err);
             } finally {
                 submitBtn.disabled = false;
             }
