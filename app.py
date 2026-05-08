@@ -3,6 +3,7 @@ import os
 from Backend.gemini_api import get_ai_response
 from datetime import datetime
 from dotenv import load_dotenv
+from supabase import create_client, Client
 
 # Load environment variables
 load_dotenv()
@@ -10,10 +11,16 @@ load_dotenv('api.env', override=True)
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 
-# --- IN-MEMORY POSTS STORAGE ---
-# Serverless functions don't have persistent filesystem, so we use in-memory storage
-# For production, consider using a database like Supabase or Neon
-posts_storage = []
+# --- SUPABASE CLIENT ---
+supabase_url = os.environ.get("SUPABASE_URL")
+supabase_key = os.environ.get("SUPABASE_ANON_KEY")
+supabase: Client = None
+
+def get_supabase() -> Client:
+    global supabase
+    if supabase is None and supabase_url and supabase_key:
+        supabase = create_client(supabase_url, supabase_key)
+    return supabase
 
 # --- PAGE ROUTES ---
 @app.route('/')
@@ -41,30 +48,36 @@ def chat():
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
     try:
-        return jsonify(posts_storage), 200
+        client = get_supabase()
+        if not client:
+            return jsonify({'error': 'Database not configured'}), 500
+        
+        result = client.table("posts").select("*").order("created_at", desc=True).execute()
+        return jsonify(result.data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/posts', methods=['POST'])
 def create_post():
     try:
+        client = get_supabase()
+        if not client:
+            return jsonify({'error': 'Database not configured'}), 500
+        
         data = request.get_json()
+        
+        if not data:
+            return jsonify({'error': 'No data received'}), 400
+            
         content = data.get('content', '').strip()
 
         if not content:
             return jsonify({'error': 'Content is required'}), 400
 
-        # Create the new post object
-        new_post = {
-            "id": int(datetime.now().timestamp()),
-            "content": content,
-            "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
+        # Insert into Supabase
+        result = client.table("posts").insert({"content": content}).execute()
 
-        # Add to in-memory storage
-        posts_storage.insert(0, new_post)  # Newest posts at the top
-
-        return jsonify({'message': 'Post created successfully'}), 201
+        return jsonify({'message': 'Post created successfully', 'post': result.data[0]}), 201
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

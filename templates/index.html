@@ -118,7 +118,7 @@
     <nav>
         <h2>BSSAuraForum</h2>
         
-            <div class="nav-item active"><a href="{{ url_for('forum') }}">Home</a></div>
+            <div class="nav-item active"><a href="{{ url_for('index') }}">Home</a></div>
             <div class="nav-item"><a href="{{ url_for('chat') }}">Study AI</a></div>
             <div class="nav-item"><a href="{{ url_for('teacher_aura') }}">Dashboard</a></div>
             <div class="nav-item"><a href="{{ url_for('my_review') }}">My Reviews</a></div>
@@ -176,20 +176,32 @@
             if (!content) return;
 
             submitBtn.disabled = true;
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = 'Posting...';
 
             try {
+                console.log("[v0] Attempting to post:", content);
                 const response = await fetch('/api/posts', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content: content }) 
                 });
 
+                console.log("[v0] Response status:", response.status);
+                const result = await response.json();
+                console.log("[v0] Response data:", result);
+
                 if (response.ok) {
                     messageInput.value = '';
+                    statusMessage.textContent = 'Posted successfully!';
+                    setTimeout(() => { statusMessage.textContent = ''; }, 2000);
                     loadMessages(); 
+                } else {
+                    statusMessage.textContent = 'Error: ' + (result.error || 'Failed to post');
                 }
             } catch (err) {
-                console.error("Error sending post:", err);
+                console.error("[v0] Error sending post:", err);
+                statusMessage.textContent = 'Network error: ' + err.message;
             } finally {
                 submitBtn.disabled = false;
             }
