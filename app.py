@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 from jinja2 import ChoiceLoader, FileSystemLoader
 import json
 import os
-from backend.gemini_api import get_ai_response
+from Backend.gemini_api import get_ai_response
 from datetime import datetime
 from dotenv import load_dotenv
 
