@@ -1,1 +1,1 @@
-# Backend module
+# Backend package
