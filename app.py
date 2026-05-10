@@ -1,14 +1,13 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from jinja2 import ChoiceLoader, FileSystemLoader
 import os
-from backend.gemini_api import get_ai_response
+from Backend.gemini_api import get_ai_response
 from datetime import datetime
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
-# Load environment variables
+# Load environment variables (for local development only)
 load_dotenv()
-load_dotenv('api.env', override=True)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,20 +22,14 @@ supabase_url = os.environ.get("SUPABASE_URL")
 supabase_key = os.environ.get("SUPABASE_ANON_KEY")
 supabase: Client = None
 
-print(f"[v0] SUPABASE_URL configured: {bool(supabase_url)}")
-print(f"[v0] SUPABASE_ANON_KEY configured: {bool(supabase_key)}")
-
 def get_supabase() -> Client:
     global supabase
     if supabase is None:
         if not supabase_url or not supabase_key:
-            print(f"[v0] Missing Supabase config - URL: {bool(supabase_url)}, KEY: {bool(supabase_key)}")
             return None
         try:
             supabase = create_client(supabase_url, supabase_key)
-            print("[v0] Supabase client created successfully")
         except Exception as e:
-            print(f"[v0] Error creating Supabase client: {e}")
             return None
     return supabase
 
