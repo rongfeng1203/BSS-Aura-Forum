@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
+from jinja2 import ChoiceLoader, FileSystemLoader
 import os
 from backend.gemini_api import get_ai_response
 from datetime import datetime
@@ -9,7 +10,13 @@ from supabase import create_client, Client
 load_dotenv()
 load_dotenv('api.env', override=True)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 app = Flask(__name__, static_folder='static', static_url_path='/static')
+app.jinja_loader = ChoiceLoader([
+    FileSystemLoader(os.path.join(BASE_DIR, 'templates')),
+    FileSystemLoader(os.path.join(BASE_DIR, 'Game')),
+])
 
 # --- SUPABASE CLIENT ---
 supabase_url = os.environ.get("SUPABASE_URL")
@@ -35,6 +42,11 @@ def get_supabase() -> Client:
 
 # --- PAGE ROUTES ---
 @app.route('/')
+@app.route('/testweb.html')
+def game():
+    return render_template('testweb.html')
+
+@app.route('/index')
 def index():
     return render_template('index.html')
 
@@ -53,6 +65,11 @@ def my_review():
 @app.route('/chat')
 def chat():
     return render_template('chat.html')
+
+
+@app.route('/game/<path:filename>')
+def game_asset(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'Game'), filename)
 
 # --- FORUM API (JSON VERSION) ---
 
@@ -114,5 +131,3 @@ def bss_guide():
 # For local development
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
-
-

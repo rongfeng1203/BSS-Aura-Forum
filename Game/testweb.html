@@ -109,7 +109,7 @@
                 // This event listener listens for the "win_game" event, which is triggered when the user wins the game.
                 // Upon triggering, it opens the main index page in the same tab.
                 document.addEventListener("win_game", function() {
-                    window.open("../Templates/index.html", "_self");
+                    window.open("{{ url_for('index') }}", "_self");
                 });
             </script>
     </div>
@@ -132,6 +132,6 @@
         }
     </script>
 
-    <script type="py" src="./Identity.py" config="./pyscript.json"></script>
+    <script type="py" src="{{ url_for('game_asset', filename='Identity.py') }}" config="{{ url_for('game_asset', filename='pyscript.json') }}"></script>
 </body>
 </html>
