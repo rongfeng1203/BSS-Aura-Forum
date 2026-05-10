@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
-from backend.gemini_api import get_ai_response
+from Backend.gemini_api import get_ai_response
 from datetime import datetime
 from dotenv import load_dotenv
 from supabase import create_client, Client
