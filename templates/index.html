@@ -145,7 +145,7 @@
         // 1. Loading posts
         async function loadMessages() {
             try {
-                const res = await fetch('/api/posts');
+                const res = await fetch('/api/messages');
                 const data = await res.json();
                 
                 if (!data || data.length === 0) {
@@ -178,7 +178,7 @@
 
             try {
                 console.log("[v0] Attempting to post:", content);
-                const response = await fetch('/api/posts', {
+                const response = await fetch('/api/messsages', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content: content }) 
