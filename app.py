@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
 from jinja2 import ChoiceLoader, FileSystemLoader
 import os
-from Backend.gemini_api import get_ai_response
+from backend.gemini_api import get_ai_response
 from datetime import datetime
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -30,6 +30,7 @@ def get_supabase() -> Client:
         try:
             supabase = create_client(supabase_url, supabase_key)
         except Exception as e:
+            print(f"[v0] Error creating Supabase client: {e}")
             return None
     return supabase
 
