@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory, redirect
 from jinja2 import ChoiceLoader, FileSystemLoader
 import os
-from Backend.gemini_api import get_ai_response
+import json
+import tempfile
+from backend.gemini_api import get_ai_response
 from datetime import datetime
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -10,6 +12,8 @@ from supabase import create_client, Client
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+REVIEWS_SEED_FILE = os.path.join(BASE_DIR, 'templates', 'MyTeacherAura', 'data', 'reviews.json')
+REVIEWS_RUNTIME_FILE = os.path.join(tempfile.gettempdir(), 'bss-aura-reviews.json')
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.jinja_loader = ChoiceLoader([
@@ -21,6 +25,30 @@ app.jinja_loader = ChoiceLoader([
 supabase_url = os.environ.get("SUPABASE_URL")
 supabase_key = os.environ.get("SUPABASE_ANON_KEY")
 supabase: Client = None
+
+def get_reviews_file_path():
+    if not os.path.exists(REVIEWS_RUNTIME_FILE):
+        try:
+            with open(REVIEWS_SEED_FILE, 'r', encoding='utf-8') as source:
+                reviews = json.load(source)
+        except (FileNotFoundError, json.JSONDecodeError):
+            reviews = []
+
+        with open(REVIEWS_RUNTIME_FILE, 'w', encoding='utf-8') as destination:
+            json.dump(reviews, destination, indent=2)
+
+    return REVIEWS_RUNTIME_FILE
+
+def read_reviews():
+    try:
+        with open(get_reviews_file_path(), 'r', encoding='utf-8') as reviews_file:
+            return json.load(reviews_file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def write_reviews(reviews):
+    with open(get_reviews_file_path(), 'w', encoding='utf-8') as reviews_file:
+        json.dump(reviews, reviews_file, indent=2)
 
 def get_supabase() -> Client:
     global supabase
@@ -61,6 +89,7 @@ def chat():
     return render_template('chat.html')
 
 @app.route('/templates/index.html')
+@app.route('/Templates/index.html')
 def legacy_index():
     return redirect('/index')
 
@@ -75,6 +104,25 @@ def legacy_teacher_aura():
 @app.route('/templates/Review.html')
 def legacy_review():
     return redirect('/review')
+
+@app.route('/MyTeacherAura/public/MyTeachersAura.html')
+@app.route('/templates/MyTeacherAura/public/MyTeachersAura.html')
+def legacy_public_teacher_aura():
+    return redirect('/teacher-aura')
+
+@app.route('/MyTeacherAura/public/Review.html')
+@app.route('/templates/MyTeacherAura/public/Review.html')
+def legacy_public_review():
+    return redirect('/review')
+
+@app.route('/MyTeacherAura/public/MyReview.html')
+@app.route('/templates/MyTeacherAura/public/MyReview.html')
+def legacy_public_my_review():
+    return redirect('/my-review')
+
+@app.route('/MyTeacherAura/public/<path:filename>')
+def teacher_asset(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'MyTeacherAura', 'public'), filename)
 
 
 @app.route('/game/<path:filename>')
@@ -119,6 +167,35 @@ def create_post():
 
         return jsonify({'message': 'Post created successfully', 'post': result.data[0]}), 201
 
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/reviews', methods=['GET'])
+def get_reviews():
+    return jsonify(read_reviews()), 200
+
+@app.route('/rate', methods=['POST'])
+def create_review():
+    try:
+        data = request.get_json() or {}
+        course = data.get('course', '').strip()
+        teacher = data.get('teacher', '').strip()
+        rating = data.get('rating', '👍')
+
+        if not course or not teacher:
+            return jsonify({'error': 'Course and teacher are required'}), 400
+
+        reviews = read_reviews()
+        new_review = {
+            'course': course,
+            'teacher': teacher,
+            'rating': rating,
+            'timestamp': datetime.utcnow().isoformat() + 'Z'
+        }
+        reviews.append(new_review)
+        write_reviews(reviews)
+
+        return jsonify({'status': 'success', 'review': new_review}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

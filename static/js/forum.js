@@ -6,6 +6,8 @@ const feedContainer = document.getElementById('feed-container');
 
 // 1. Function to fetch posts from JSON via Flask
 async function loadPosts() {
+    if (!feedContainer) return;
+
     try {
         const response = await fetch(API_URL);
         const posts = await response.json();
@@ -24,6 +26,8 @@ async function loadPosts() {
 // 2. Function to send post to JSON via Flask
 if (submitBtn) {
     submitBtn.addEventListener('click', async () => {
+        if (!messageInput) return;
+
         const content = messageInput.value.trim();
         if (!content) return;
 
