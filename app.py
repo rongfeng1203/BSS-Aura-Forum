@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, redirect
 from jinja2 import ChoiceLoader, FileSystemLoader
 import os
-from backend.gemini_api import get_ai_response
+from Backend.gemini_api import get_ai_response
 from datetime import datetime
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -54,11 +54,27 @@ def teacher_aura():
 
 @app.route('/my-review')
 def my_review():
-    return render_template('MyReview.html')
+    return render_template('MyTeacherAura/public/MyReview.html')
 
 @app.route('/chat')
 def chat():
     return render_template('chat.html')
+
+@app.route('/templates/index.html')
+def legacy_index():
+    return redirect('/index')
+
+@app.route('/templates/chat.html')
+def legacy_chat():
+    return redirect('/chat')
+
+@app.route('/templates/MyTeachersAura.html')
+def legacy_teacher_aura():
+    return redirect('/teacher-aura')
+
+@app.route('/templates/Review.html')
+def legacy_review():
+    return redirect('/review')
 
 
 @app.route('/game/<path:filename>')
