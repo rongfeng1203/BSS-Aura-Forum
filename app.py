@@ -68,6 +68,7 @@ def game_asset(filename):
 # --- FORUM API (JSON VERSION) ---
 
 @app.route('/api/posts', methods=['GET'])
+@app.route('/api/messages', methods=['GET'])
 def get_posts():
     try:
         client = get_supabase()
@@ -80,6 +81,7 @@ def get_posts():
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/posts', methods=['POST'])
+@app.route('/api/messages', methods=['POST'])
 def create_post():
     try:
         client = get_supabase()

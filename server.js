@@ -27,12 +27,12 @@ app.get('/', (req, res) => {
 });
 
 // GET: Fetch all messages
-app.get('/api/messages', (req, res) => {
+app.get(['/api/messages', '/api/posts'], (req, res) => {
     res.json(getMessages());
 });
 
 // POST: Save a new message
-app.post('/api/messages', (req, res) => {
+app.post(['/api/messages', '/api/posts'], (req, res) => {
     const { content } = req.body;
     if (!content) return res.status(400).json({ error: "Content required" });
 

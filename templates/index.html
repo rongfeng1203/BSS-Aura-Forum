@@ -178,7 +178,7 @@
 
             try {
                 console.log("[v0] Attempting to post:", content);
-                const response = await fetch('/api/messsages', {
+                const response = await fetch('/api/messages', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content: content }) 
