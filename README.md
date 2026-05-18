@@ -1,3 +1,8 @@
+deployed on "https://bss-aura-forum-zeta.vercel.app/"
+
+
+
+
 Yall this is a forum to share ideas and communite for BSS students. 
 We have a rate my teachers corner so make sure to check that out. 
 Before entering the forunm you have to complete a python quiz to make sure you are actually a student. 
