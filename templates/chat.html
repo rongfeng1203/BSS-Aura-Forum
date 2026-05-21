@@ -1,29 +1,55 @@
 <!DOCTYPE html>
+<!--
+    chat.html  --  AI chat page (Aura Study Buddy / BSS Guide)
+    -----------------------------------------------------------
+    Structure:
+      - .main-container  : vertical stack centred on screen
+        - theme-toggle-btn : swaps personas (handled by toggleTheme in chat.js)
+        - .dark-web-container : the fake-terminal chat box
+          - .terminal-header  : red/yellow/green dots + persona title
+          - #chat-window      : where messages get rendered
+          - .input-area       : text input + EXECUTE button
+    Styles come from /static/CSS/dark.css.
+    Behaviour comes from /static/js/chat.js (loaded at the bottom).
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BSS Aura Forum</title>
+    <!-- Flask's url_for() builds the correct static path for both
+         local dev (/static/...) and production (Vercel) deployments. -->
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/dark.css') }}">
 </head>
 <body>
     <div class="main-container">
+        <!-- Persona toggle. Clicking calls toggleTheme() in chat.js,
+             which swaps the body class and updates the title below. -->
         <button id="theme-toggle-btn" class="theme-switch" onclick="toggleTheme()">
             Switch to BSS Guide
         </button>
 
+        <!-- The "terminal window" wrapper. All three sections below
+             (header, message area, input bar) sit inside it. -->
         <div class="dark-web-container">
+
+            <!-- Decorative macOS-style window header. The persona
+                 title is updated dynamically by toggleTheme(). -->
             <div class="terminal-header">
                 <span class="dot red"></span>
                 <span class="dot yellow"></span>
                 <span class="dot green"></span>
                 <p id="persona-title" class="terminal-title">TERMINAL // AI_CORE_v1.5</p>
             </div>
-            
+
+            <!-- Message feed. appendMessage() in chat.js appends one
+                 <div> per message into here, scrolling automatically. -->
             <div id="chat-window" class="chat-display">
                 <div class="ready-line">READY FOR INPUT...</div>
             </div>
 
+            <!-- Input bar. The EXECUTE button calls sendMessage() in
+                 chat.js, which reads #user-input and POSTs to /study-buddy. -->
             <div class="input-area">
                 <span class="input-prompt">></span>
                 <input type="text" id="user-input" placeholder="Enter command..." autocomplete="off">
@@ -31,7 +57,10 @@
             </div>
         </div>
     </div>
+
+    <!-- Script loaded at the end so the DOM is ready when its
+         functions get attached to button clicks. -->
     <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
-    
+
 </body>
 </html>

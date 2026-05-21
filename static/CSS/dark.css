@@ -1,35 +1,60 @@
+/* ============================================================
+ * dark.css  --  Theme + layout for the AI chat page
+ * ------------------------------------------------------------
+ * Visual goal: a dark "hacker terminal" feel that signals
+ * privacy / walled garden. The whole theme system is driven by
+ * three CSS variables (--accent, --glow, --bg-dark), defined
+ * once and reused everywhere.
+ *
+ * Persona switching works by adding/removing the .bss-theme
+ * class on <body>. That class overrides the variables, which
+ * cascades through every element that uses var(--accent).
+ * One class toggle = full theme swap (handled by chat.js).
+ * ============================================================ */
+
+/* ---- THEME VARIABLES ------------------------------------- */
+/* Default theme = Aura Study Buddy (pink accent). */
 :root {
-    --accent: #ff3694; /* Pink */
-    --glow: rgba(255, 45, 143, 0.2);
-    --bg-dark: #0d0d0d;
+    --accent: #ff3694;                  /* Pink accent for text + buttons */
+    --glow: rgba(255, 45, 143, 0.2);    /* Soft glow around the chat box */
+    --bg-dark: #0d0d0d;                 /* Page background colour */
 }
 
+/* When chat.js adds .bss-theme to <body>, these overrides
+   activate and re-skin the page to BSS Guide (burgundy). */
 body.bss-theme {
-    --accent: #761831; /* Burgundy */
+    --accent: #761831;                  /* Burgundy accent (BSS school colour) */
     --glow: rgba(92, 25, 36, 0.3);
 }
 
+/* ---- BASE BODY LAYOUT ------------------------------------ */
+/* Centres the whole interface in the viewport. Flexbox handles
+   both horizontal and vertical centring with just three lines. */
 body {
     background-color: var(--bg-dark);
     color: var(--accent);
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace;  /* terminal aesthetic */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100vh;        /* full viewport height for centring */
     margin: 0;
-    overflow: hidden;
+    overflow: hidden;     /* no scrollbars on the body itself */
 }
 
-/* Centers the button above the chat box */
+/* ---- MAIN CONTAINER -------------------------------------- */
+/* Stacks the theme-switch button on top of the chat box and
+   centres them as a vertical column with 30px between them. */
 .main-container {
     display: flex;
     flex-direction: column;
-    align-items: center; 
-    gap: 30px; 
+    align-items: center;
+    gap: 30px;
 }
 
-/* THE BUTTON - Fixed centering and hover */
+/* ---- THEME-SWITCH BUTTON --------------------------------- */
+/* Outlined button above the terminal. Stays neutral grey by
+   default and lights up in the current accent colour on hover. */
 .theme-switch {
     background: transparent;
     color: #767676;;
@@ -48,8 +73,12 @@ body {
     color: #000;
 }
 
+/* ---- TERMINAL WINDOW ------------------------------------- */
+/* The main chat "box" -- styled to look like a macOS terminal
+   window with rounded corners and a glow that picks up the
+   active accent colour through var(--glow). */
 .dark-web-container {
-    width: 600px; 
+    width: 600px;
     background: #121212;
     border: 1px solid #333;
     border-radius: 12px;
@@ -57,6 +86,9 @@ body {
     overflow: hidden;
 }
 
+/* ---- TERMINAL HEADER BAR --------------------------------- */
+/* The strip at the top of the chat box that holds the three
+   traffic-light dots and the persona title text. */
 .terminal-header {
     background: #1a1a1a;
     padding: 1px 15px;
@@ -65,11 +97,15 @@ body {
     border-bottom: 1px solid #222;
 }
 
+/* The three coloured circles in the header (red/yellow/green).
+   Just decorative -- they mimic a macOS window's controls. */
 .dot { height: 13px; width: 13px; border-radius: 50%; margin-right: 6px; }
 .red { background: #ff5f56; }
 .yellow { background: #ffbd2e; }
 .green { background: #27c93f; }
 
+/* Small uppercase title text in the header (e.g. "AURA // STUDY_BUDDY_v2.5").
+   Updated by chat.js whenever the persona is switched. */
 .terminal-title {
     margin-left: 8px;
     font-size: 12px;
@@ -77,6 +113,9 @@ body {
     text-transform: uppercase;
 }
 
+/* ---- CHAT MESSAGE AREA ----------------------------------- */
+/* Scrollable area where user + AI messages appear.
+   Fixed height with overflow-y so older messages stay reachable. */
 .chat-display {
     height: 320px;
     overflow-y: auto;
@@ -85,11 +124,16 @@ body {
     scrollbar-width: thin;
 }
 
+/* The opening "READY FOR INPUT..." line shown before any chat happens. */
 .ready-line {
     margin-bottom: 25px;
     font-size: 15px;
 }
 
+/* ---- INPUT BAR ------------------------------------------- */
+/* The strip at the bottom containing the > prompt, the text
+   input, and the EXECUTE button. Flex layout keeps them on
+   one row with a small gap between them. */
 .input-area {
     padding: 10px 20px;
     background: #0d0d0d;
@@ -99,21 +143,26 @@ body {
     gap: 10px;
 }
 
+/* The leading ">" prompt symbol (terminal aesthetic). */
 .prompt-symbol {
     color: var(--accent);
     font-weight: bold;
 }
 
+/* The text field where the user types. Borderless + transparent
+   so it blends into the terminal styling. */
 #user-input {
     background: transparent;
     border: none;
     color: #666;
-    flex-grow: 1;
-    outline: none;
-    font-family: inherit;
+    flex-grow: 1;              /* expands to fill available space */
+    outline: none;             /* removes the default focus ring */
+    font-family: inherit;      /* uses the same Courier font as <body> */
     font-size: 1rem;
 }
 
+/* The EXECUTE button -- always uses the current accent colour
+   so it re-skins automatically when the persona is switched. */
 #send-btn {
     background: var(--accent);
     color: black;
